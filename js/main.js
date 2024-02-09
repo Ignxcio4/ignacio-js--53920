@@ -1,53 +1,68 @@
-// Definir opciones de automóviles con sus precios
-const opcionesAutomoviles = [
-    { nombre: "Automóvil Económico", precio: 10000 },
-    { nombre: "Automóvil Estándar", precio: 20000 },
-    { nombre: "Automóvil de Lujo", precio: 30000 }
-];
+//el usu<rio ingresa su nombre 
+let nombreUsuario = prompt("Por favor, ingresa tu nombre:");
 
-function calcularCompra() {
-    // Obtener el presupuesto del usuario
-    const presupuesto = parseFloat(document.getElementById('budget').value);
+let respuestaUsuario = prompt("Hola " + nombreUsuario + ", ¿eres profesor? (responde sí o no)");
 
-    // Limpiar el resultado anterior
-    document.getElementById('resultado').innerHTML = "";
+if (respuestaUsuario.toLowerCase() === "sí") {
+  console.log("¡Bienvenido, " + nombreUsuario + "! Ahora puedes corregir.");
+} else {
+  console.log("Lo siento, " + nombreUsuario + ", no puedes realizar la corrección.");
+}
 
-    // Verificar si se ingresó un monto válido
-    if (isNaN(presupuesto) || presupuesto <= 0) {
-        mostrarResultado("Por favor, ingrese un monto válido.");
-        return;
+function obtenerPrecioAuto(marca, año) {
+  // colocamos diferentes precios y años 
+  let precios = {
+    toyota: { 2022: 25000, 2023: 27000, 2024: 29000 },
+    honda: { 2022: 23000, 2023: 25000, 2024: 27000 },
+    ford: { 2022: 27000, 2023: 29000, 2024: 31000 }
+  };
+
+  // no fijamos si la marca y año colocada estan en la lista
+  if (precios[marca] && precios[marca][año]) {
+    return precios[marca][año];
+  } else {
+    return null; // nos avisa si la marca y el año no son encontrados 
+  }
+}
+
+function solicitarInformacionAuto() {
+  let marca = prompt("Ingresa la marca del auto (toyota, honda, ford):").toLowerCase();
+  let año = parseInt(prompt("Ingresa el año del auto:"));
+
+  return { marca, año };
+}
+
+function mostrarInformacionAuto(auto) {
+  console.log("Información del auto:");
+  console.log("Marca: " + auto.marca);
+  console.log("Año: " + auto.año);
+}
+
+function simuladorCompraAuto() {
+  let autoElegido = solicitarInformacionAuto();
+  let precioAuto = obtenerPrecioAuto(autoElegido.marca, autoElegido.año);
+
+  if (precioAuto !== null) {
+    autoElegido.precio = precioAuto;
+    mostrarInformacionAuto(autoElegido);
+
+    let deseaComprar = confirm("¿Deseas comprar este auto por $" + precioAuto.toFixed(2) + "?");
+    
+    if (deseaComprar) {
+      let presupuesto = parseFloat(prompt("Ingresa tu presupuesto para la compra:"));
+
+      if (presupuesto >= precioAuto) {
+        console.log("¡Felicidades! Has comprado el auto. ¡Disfrútalo!");
+      } else {
+        console.log("Lo siento, no tienes suficiente presupuesto para este auto.");
+      }
+    } else {
+      console.log("Gracias por visitarnos. ¡Hasta luego!");
     }
-
-    // Mostrar opciones de automóviles disponibles
-    mostrarResultado("Opciones de Automóviles Disponibles:");
-    opcionesAutomoviles.forEach((opcion, index) => {
-        mostrarResultado(`<input type="radio" name="opcion" value="${index}"> ${opcion.nombre} - $${opcion.precio}`);
-    });
-
-    // Mostrar el botón para seleccionar
-    mostrarResultado(`<button onclick="seleccionarAutomovil()">Seleccionar Automóvil</button>`);
+  } else {
+    console.log("Lo sentimos, no tenemos información para la marca o año especificados.");
+  }
 }
 
-function seleccionarAutomovil() {
-    // Obtener la opción seleccionada por el usuario
-    const seleccion = document.querySelector('input[name="opcion"]:checked');
-
-    // Verificar si se seleccionó una opción
-    if (!seleccion) {
-        mostrarResultado("Por favor, seleccione un automóvil.");
-        return;
-    }
-
-    // Obtener la información del automóvil seleccionado
-    const opcionSeleccionada = opcionesAutomoviles[parseInt(seleccion.value)];
-
-    // Mostrar el resultado detallado
-    mostrarResultado(`<p>¡Felicidades! Puedes comprar un ${opcionSeleccionada.nombre} por $${opcionSeleccionada.precio}.</p>`);
-    mostrarResultado("<p>Detalles del Automóvil:</p>");
-    mostrarResultado(`<ul><li>Nombre: ${opcionSeleccionada.nombre}</li><li>Precio: $${opcionSeleccionada.precio}</li></ul>`);
-}
-
-function mostrarResultado(mensaje) {
-    // Mostrar el resultado en el elemento con id 'resultado'
-    document.getElementById('resultado').innerHTML += mensaje + "<br>";
-}
+simuladorCompraAuto();
+console.log("fin del proceso")
