@@ -1,13 +1,17 @@
-//el usu<rio ingresa su nombre 
-let nombreUsuario = prompt("Por favor, ingresa tu nombre:");
+//el usuario ingresa su nombre 
+let seguirComprando = true;
 
-let respuestaUsuario = prompt("Hola " + nombreUsuario + ", ¿eres profesor? (responde sí o no)");
+//preguntamos al usuario si luego de seguir quiere volver a comprar 
+while (seguirComprando) {
+  let nombreUsuario = prompt("Por favor, ingresa tu nombre:");
 
-if (respuestaUsuario.toLowerCase() === "sí") {
-  console.log("¡Bienvenido, " + nombreUsuario + "! Ahora puedes corregir.");
-} else {
-  console.log("Lo siento, " + nombreUsuario + ", no puedes realizar la corrección.");
-}
+  let respuestaUsuario = prompt("Hola " + nombreUsuario + ", ¿eres profesor?");
+
+  if (respuestaUsuario.toLowerCase() === "sí") {
+    console.log("¡Bienvenido, " + nombreUsuario + "! Ahora puedes corregir.");
+  } else {
+    console.log("Lo siento, " + nombreUsuario + ", no puedes realizar la corrección.");
+  }
 
 function obtenerPrecioAuto(marca, año) {
   // colocamos diferentes precios y años 
@@ -25,12 +29,12 @@ function obtenerPrecioAuto(marca, año) {
   }
 }
 
+//pedimos informacion del auto que quiere 
 function solicitarInformacionAuto() {
   let marca = prompt("Ingresa la marca del auto (toyota, honda, ford):").toLowerCase();
   let año = parseInt(prompt("Ingresa el año del auto:"));
 
-  return { marca, año };
-}
+  return { marca, año };  }
 
 function mostrarInformacionAuto(auto) {
   console.log("Información del auto:");
@@ -64,5 +68,10 @@ function simuladorCompraAuto() {
   }
 }
 
-simuladorCompraAuto();
-console.log("fin del proceso")
+simuladorCompraAuto()
+let respuestaUsuarioContinuar = prompt("¿Quieres seguir comprando autos? (sí/no)").toLowerCase();
+  if (respuestaUsuarioContinuar !== "sí") {
+    seguirComprando = false;
+  }
+}
+console.log("fin del proceso");
