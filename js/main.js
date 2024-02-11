@@ -7,7 +7,7 @@ while (seguirComprando) {
 
   let respuestaUsuario = prompt("Hola " + nombreUsuario + ", ¿eres profesor?");
 
-  if (respuestaUsuario.toLowerCase() === "sí") {
+  if (respuestaUsuario.toLowerCase() === "si") {
     console.log("¡Bienvenido, " + nombreUsuario + "! Ahora puedes corregir.");
   } else {
     console.log("Lo siento, " + nombreUsuario + ", no puedes realizar la corrección.");
