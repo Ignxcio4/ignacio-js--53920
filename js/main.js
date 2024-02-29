@@ -1,77 +1,116 @@
-//el usuario ingresa su nombre 
-let seguirComprando = true;
+let seguirCotizando = true;
 
-//preguntamos al usuario si luego de seguir quiere volver a comprar 
-while (seguirComprando) {
-  let nombreUsuario = prompt("Por favor, ingresa tu nombre:");
+const modelosPermitidos = {
+  toyota: ["corolla", "camry", "rav4"],
+  honda: ["civic", "accord", "cr-v"],
+  ford: ["focus", "fusion", "escape"]
+};
 
-  let respuestaUsuario = prompt("Hola " + nombreUsuario + ", ¿eres profesor?");
+const seguros = {
+  opciones: {
+    basico: { nombre: "Básico", cobertura: "Responsabilidad civil", precio: 800 },
+    intermedio: { nombre: "Intermedio", cobertura: "Robo y daños parciales", precio: 1200 },
+    completo: { nombre: "Completo", cobertura: "Cobertura completa", precio: 1800 },
+    premium: { nombre: "Premium", cobertura: "Cobertura completa + Asistencia en carretera", precio: 2500 }
+  },
+  descuentoProfesor: 0.1,
+  descuentoAnioAntiguedad: 0.05
+};
 
-  if (respuestaUsuario.toLowerCase() === "si") {
-    console.log("¡Bienvenido, " + nombreUsuario + "! Ahora puedes corregir.");
+function validarRespuesta(pregunta, opciones, callback) {
+  let respuestaUsuario = prompt(pregunta).toLowerCase();
+
+  if (opciones.includes(respuestaUsuario)) {
+    callback(respuestaUsuario);
   } else {
-    console.log("Lo siento, " + nombreUsuario + ", no puedes realizar la corrección.");
-  }
-
-function obtenerPrecioAuto(marca, año) {
-  // colocamos diferentes precios y años 
-  let precios = {
-    toyota: { 2022: 25000, 2023: 27000, 2024: 29000 },
-    honda: { 2022: 23000, 2023: 25000, 2024: 27000 },
-    ford: { 2022: 27000, 2023: 29000, 2024: 31000 }
-  };
-
-  // no fijamos si la marca y año colocada estan en la lista
-  if (precios[marca] && precios[marca][año]) {
-    return precios[marca][año];
-  } else {
-    return null; // nos avisa si la marca y el año no son encontrados 
+    console.log("Respuesta no válida. Por favor, intenta de nuevo.");
+    validarRespuesta(pregunta, opciones, callback);
   }
 }
 
-//pedimos informacion del auto que quiere 
-function solicitarInformacionAuto() {
-  let marca = prompt("Ingresa la marca del auto (toyota, honda, ford):").toLowerCase();
-  let año = parseInt(prompt("Ingresa el año del auto:"));
+let nombreUsuario = prompt("Por favor, ingresa tu nombre:");
 
-  return { marca, año };  }
+while (seguirCotizando) {
+  validarRespuesta("Hola " + nombreUsuario + ", ¿eres profesor?", ["si", "no"], (respuesta) => {
+    let descuento = 0;
 
-function mostrarInformacionAuto(auto) {
-  console.log("Información del auto:");
-  console.log("Marca: " + auto.marca);
-  console.log("Año: " + auto.año);
-}
-
-function simuladorCompraAuto() {
-  let autoElegido = solicitarInformacionAuto();
-  let precioAuto = obtenerPrecioAuto(autoElegido.marca, autoElegido.año);
-
-  if (precioAuto !== null) {
-    autoElegido.precio = precioAuto;
-    mostrarInformacionAuto(autoElegido);
-
-    let deseaComprar = confirm("¿Deseas comprar este auto por $" + precioAuto.toFixed(2) + "?");
-    
-    if (deseaComprar) {
-      let presupuesto = parseFloat(prompt("Ingresa tu presupuesto para la compra:"));
-
-      if (presupuesto >= precioAuto) {
-        console.log("¡Felicidades! Has comprado el auto. ¡Disfrútalo!");
-      } else {
-        console.log("Lo siento, no tienes suficiente presupuesto para este auto.");
-      }
+    if (respuesta === "si") {
+      console.log("¡Bienvenido, " + nombreUsuario + "! Como profesor, obtienes un 10% de descuento.");
+      descuento += seguros.descuentoProfesor;
     } else {
-      console.log("Gracias por visitarnos. ¡Hasta luego!");
+      console.log("Lo siento, " + nombreUsuario + ", no obtienes descuento como profesor.");
     }
+
+    let autoElegido = solicitarInformacionAuto();
+    let tipoSeguroElegido = solicitarTipoSeguro();
+
+    let precioSeguro = calcularPrecioSeguro(autoElegido.marca, autoElegido.modelo, autoElegido.año, tipoSeguroElegido, descuento);
+
+    if (precioSeguro !== null) {
+      mostrarInformacionSeguro(autoElegido, tipoSeguroElegido, precioSeguro);
+
+      let deseaCotizar = confirm("¿Quieres cotizar otro seguro?");
+      seguirCotizando = deseaCotizar;
+    } else {
+      console.log("Lo sentimos, no tenemos información para la marca, modelo o año especificados.");
+    }
+  });
+}
+
+console.log("Fin del proceso de cotización de seguros");
+
+function calcularPrecioSeguro(marca, modelo, año, tipoSeguro, descuento) {
+  if (modelosPermitidos[marca] && modelosPermitidos[marca].includes(modelo) && seguros.opciones[tipoSeguro]) {
+    let antiguedad = new Date().getFullYear() - año;
+    let precioBase = seguros.opciones[tipoSeguro].precio;
+
+    // Aplicar descuento por antigüedad
+    let descuentoAntiguedad = antiguedad * seguros.descuentoAnioAntiguedad;
+    let precioConDescuento = precioBase - (precioBase * descuentoAntiguedad);
+
+    // Aplicar descuento adicional (si hay)
+    let precioFinal = precioConDescuento - (precioConDescuento * descuento);
+
+    return precioFinal;
   } else {
-    console.log("Lo sentimos, no tenemos información para la marca o año especificados.");
+    return null;
   }
 }
 
-simuladorCompraAuto()
-let respuestaUsuarioContinuar = prompt("¿Quieres seguir comprando autos? (sí/no)").toLowerCase();
-  if (respuestaUsuarioContinuar !== "sí") {
-    seguirComprando = false;
-  }
+function solicitarInformacionAuto() {
+  let marca = null;
+  let modelo = null;
+
+  validarRespuesta("Ingresa la marca del auto (toyota, honda, ford):", Object.keys(modelosPermitidos), (respuesta) => {
+    marca = respuesta;
+
+    validarRespuesta("Ingresa el modelo del auto (" + modelosPermitidos[marca].join(", ") + "):", modelosPermitidos[marca], (respuestaModelo) => {
+      modelo = respuestaModelo;
+    });
+  });
+
+  let año = parseInt(prompt("Ingresa el año del auto:"));
+  return { marca, modelo, año };
 }
-console.log("fin del proceso");
+
+function solicitarTipoSeguro() {
+  let opcionesSeguro = Object.keys(seguros.opciones);
+  let mensajeOpciones = opcionesSeguro.map(opcion => `${opcion} - ${seguros.opciones[opcion].nombre}`).join("\n");
+  let tipoSeguro = null;
+
+  validarRespuesta("Selecciona el tipo de seguro:\n" + mensajeOpciones, opcionesSeguro, (respuestaTipoSeguro) => {
+    tipoSeguro = respuestaTipoSeguro;
+  });
+
+  return tipoSeguro;
+}
+
+function mostrarInformacionSeguro(auto, tipoSeguro, precioSeguro) {
+  console.log("Información del seguro:");
+  console.log("Marca: " + auto.marca);
+  console.log("Modelo: " + auto.modelo);
+  console.log("Año: " + auto.año);
+  console.log("Tipo de seguro: " + seguros.opciones[tipoSeguro].nombre);
+  console.log("Cobertura: " + seguros.opciones[tipoSeguro].cobertura);
+  console.log("Precio del seguro: $" + precioSeguro.toFixed(2));
+}
