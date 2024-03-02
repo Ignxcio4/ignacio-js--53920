@@ -1,7 +1,7 @@
-// Inicialización de la bandera para seguir cotizando
+// iniciamos para que el usuario siga cotizando
 let seguirCotizando = true;
 
-// Definición de modelos de autos permitidos con algunos cambios
+// definimos las marcas y modelos de autos permitidos 
 const modelosPermitidos = {
   toyota: ["corolla", "camry", "rav4", "hilux"],
   honda: ["civic", "accord", "cr-v"],
@@ -11,19 +11,19 @@ const modelosPermitidos = {
   bmw: ["3 series", "5 series", "x3"]
 };
 
-// Definición de opciones de seguros y descuentos
+// definimos los diferentes seguros y los descuentos que se hacen 
 const seguros = {
   opciones: {
-    basico: { nombre: "Básico", cobertura: "Responsabilidad civil", precio: 1200 },  // Se aumentó el precio base
-    intermedio: { nombre: "Intermedio", cobertura: "Robo y daños parciales", precio: 1500 },  // Se aumentó el precio base
-    completo: { nombre: "Completo", cobertura: "Cobertura completa", precio: 2000 },  // Se aumentó el precio base
-    premium: { nombre: "Premium", cobertura: "Cobertura completa + Asistencia en carretera", precio: 2800 }  // Se aumentó el precio base
+    basico: { nombre: "Básico", cobertura: "Responsabilidad civil", precio: 12000 },  
+    intermedio: { nombre: "Intermedio", cobertura: "Robo y daños parciales", precio: 15000 },  
+    completo: { nombre: "Completo", cobertura: "Cobertura completa", precio: 20000 },  
+    premium: { nombre: "Premium", cobertura: "Cobertura completa + Asistencia en carretera", precio: 28000 }  
   },
   descuentoProfesor: 0.1,
   descuentoAnioAntiguedad: 0.05
 };
 
-// Función de validación de respuestas del usuario
+// funcion para validar la respuesta del usuario 
 function validarRespuesta(pregunta, opciones, callback) {
   let respuestaUsuario = prompt(pregunta).toLowerCase();
 
@@ -35,12 +35,12 @@ function validarRespuesta(pregunta, opciones, callback) {
   }
 }
 
-// Solicitud del nombre del usuario
+// solicitamos el nombre del usuario 
 let nombreUsuario = prompt("Por favor, ingresa tu nombre:");
 
-// Bucle principal para cotizar seguros
+// bucle principal para la cotizacion 
 while (seguirCotizando) {
-  // Verificación si el usuario es profesor
+  // verificamos si el usuario es profesor o no 
   validarRespuesta("Hola " + nombreUsuario + ", ¿eres profesor?", ["si", "no"], (respuesta) => {
     let descuento = 0;
 
@@ -51,17 +51,17 @@ while (seguirCotizando) {
       console.log("Lo siento, " + nombreUsuario + ", no obtienes descuento como profesor.");
     }
 
-    // Solicitud de información del auto y tipo de seguro
+    // solicitamos información del auto y tipo de seguro
     let autoElegido = solicitarInformacionAuto();
     let tipoSeguroElegido = solicitarTipoSeguro();
 
-    // Cálculo del precio del seguro y mostrar información al usuario
+    // calculamos el precio del seguro y mostramos información al usuario
     let precioSeguro = calcularPrecioSeguro(autoElegido.marca, autoElegido.modelo, autoElegido.año, tipoSeguroElegido, descuento);
 
     if (precioSeguro !== null) {
       mostrarInformacionSeguro(autoElegido, tipoSeguroElegido, precioSeguro);
 
-      // Preguntar al usuario si desea cotizar otro seguro
+      // consulta al usuario si quiere cotizar otro seguro mas 
       let deseaCotizar = confirm("¿Quieres cotizar otro seguro?");
       seguirCotizando = deseaCotizar;
     } else {
@@ -70,21 +70,22 @@ while (seguirCotizando) {
   });
 }
 
-// Mensaje de fin del proceso de cotización de seguros
+// mensaje para avisar de la finalizacion de la cotizacion 
 console.log("Fin del proceso de cotización de seguros");
 
-// Función para calcular el precio del seguro
+// calculamos el precio del seguro con una funcion 
 function calcularPrecioSeguro(marca, modelo, año, tipoSeguro, descuento) {
   if (modelosPermitidos[marca] && modelosPermitidos[marca].includes(modelo) && seguros.opciones[tipoSeguro]) {
     let antiguedad = new Date().getFullYear() - año;
     let precioBase = seguros.opciones[tipoSeguro].precio;
 
-    // Aplicar descuento por antigüedad
+    // aplicamos descuento por la antiguedad del auto 
     let descuentoAntiguedad = antiguedad * seguros.descuentoAnioAntiguedad;
     let precioConDescuento = precioBase - (precioBase * descuentoAntiguedad);
 
-    // Aplicar descuento adicional (si hay)
+    // Aplicar descuento adicional 
     let precioFinal = precioConDescuento - (precioConDescuento * descuento);
+
 
     return precioFinal;
   } else {
@@ -92,33 +93,33 @@ function calcularPrecioSeguro(marca, modelo, año, tipoSeguro, descuento) {
   }
 }
 
-// Función para solicitar información sobre el auto al usuario
+// Funcion para solicitar información sobre el auto al usuario
 function solicitarInformacionAuto() {
   let marca = null;
   let modelo = null;
 
-  // Validar la marca del auto
+  // Validamos la marca del auto
   validarRespuesta("Ingresa la marca del auto (toyota, honda, ford):", Object.keys(modelosPermitidos), (respuesta) => {
     marca = respuesta;
 
-    // Validar el modelo del auto
+    // Validamos el modelo del auto
     validarRespuesta("Ingresa el modelo del auto (" + modelosPermitidos[marca].join(", ") + "):", modelosPermitidos[marca], (respuestaModelo) => {
       modelo = respuestaModelo;
     });
   });
 
-  // Obtener el año del auto
+  // obtenemos el año del auto 
   let año = parseInt(prompt("Ingresa el año del auto:"));
   return { marca, modelo, año };
 }
 
-// Función para solicitar al usuario seleccionar el tipo de seguro
+// funcion para que el usuario elija el tipo de seguro 
 function solicitarTipoSeguro() {
   let opcionesSeguro = Object.keys(seguros.opciones);
   let mensajeOpciones = opcionesSeguro.map(opcion => `${opcion} - ${seguros.opciones[opcion].nombre}`).join("\n");
   let tipoSeguro = null;
 
-  // Validar el tipo de seguro
+  // Validamos el tipo de seguro
   validarRespuesta("Selecciona el tipo de seguro:\n" + mensajeOpciones, opcionesSeguro, (respuestaTipoSeguro) => {
     tipoSeguro = respuestaTipoSeguro;
   });
@@ -126,7 +127,7 @@ function solicitarTipoSeguro() {
   return tipoSeguro;
 }
 
-// Función para mostrar la información del seguro al usuario
+// mostramos los datos del seguro al usuario 
 function mostrarInformacionSeguro(auto, tipoSeguro, precioSeguro) {
   console.log("Información del seguro:");
   console.log("Marca: " + auto.marca);
