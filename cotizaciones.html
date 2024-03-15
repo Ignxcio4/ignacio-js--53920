@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulador de Cotizaciones de Seguros</title>
+<link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+
+<h1>Simulador de Cotizaciones de Seguros</h1>
+
+<form id="formulario">
+    <div>
+        <label for="tipo">Tipo de Vehículo:</label>
+        <select name="tipo" id="tipo">
+            <option value="auto">Auto</option>
+            <option value="moto">Moto</option>
+        </select>
+    </div>
+
+    <div>
+        <label for="marca">Marca:</label>
+        <select name="marca" id="marca">
+            <option value="">Seleccione la marca</option>
+        </select>
+    </div>
+
+    <div>
+        <label for="modelo">Modelo:</label>
+        <select name="modelo" id="modelo">
+            <option value="">Seleccione el modelo</option>
+        </select>
+    </div>
+
+    <div>
+        <label for="anio">Año:</label>
+        <select name="anio" id="anio">
+            <option value="">Seleccione el año</option>
+        </select>
+    </div>
+
+    <div>
+        <label for="seguro">Tipo de Seguro:</label>
+        <select name="seguro" id="seguro">
+            <option value="">Seleccione el tipo de seguro</option>
+            <option value="basico">Básico</option>
+            <option value="completo">Completo</option>
+        </select>
+    </div>
+
+    <button type="submit">Calcular Cotización</button>
+</form>
+
+<div id="resultado" style="display: none;">
+    <h2>Resultado de Cotización</h2>
+    <p id="cotizacionResultado"></p>
+    <p id="coberturaResultado"></p>
+</div>
+
+<script src="./js/main.js"></script>
+</body>
+</html>

@@ -1,139 +1,106 @@
-// iniciamos para que el usuario siga cotizando
-let seguirCotizando = true;
+document.addEventListener('DOMContentLoaded', function() {
+  const tipoVehiculoSelect = document.getElementById('tipo');
+  const marcaSelect = document.getElementById('marca');
+  const modeloSelect = document.getElementById('modelo');
+  const anioSelect = document.getElementById('anio');
+  const seguroSelect = document.getElementById('seguro');
+  const resultadoDiv = document.getElementById('resultado');
+  const cotizacionResultado = document.getElementById('cotizacionResultado');
+  const coberturaResultado = document.getElementById('coberturaResultado');
 
-// definimos las marcas y modelos de autos permitidos 
-const modelosPermitidos = {
-  toyota: ["corolla", "camry", "rav4", "hilux"],
-  honda: ["civic", "accord", "cr-v"],
-  ford: ["focus", "fusion", "escape"],
-  chevrolet: ["malibu", "cruze", "equinox"],
-  volkswagen: ["jetta", "passat", "tiguan"],
-  bmw: ["3 series", "5 series", "x3"]
-};
+  const marcasPorTipo = {
+      auto: ["Toyota", "Honda", "Ford"],
+      moto: ["Yamaha", "Suzuki", "Kawasaki"]
+  };
 
-// definimos los diferentes seguros y los descuentos que se hacen 
-const seguros = {
-  opciones: {
-    basico: { nombre: "Básico", cobertura: "Responsabilidad civil", precio: 12000 },  
-    intermedio: { nombre: "Intermedio", cobertura: "Robo y daños parciales", precio: 15000 },  
-    completo: { nombre: "Completo", cobertura: "Cobertura completa", precio: 20000 },  
-    premium: { nombre: "Premium", cobertura: "Cobertura completa + Asistencia en carretera", precio: 28000 }  
-  },
-  descuentoProfesor: 0.1,
-  descuentoAnioAntiguedad: 0.05
-};
+  const modelosPorMarca = {
+      Toyota: ["Corolla", "Yaris", "Camry"],
+      Honda: ["Civic", "Accord", "CR-V"],
+      Ford: ["Fiesta", "Focus", "Mustang"],
+      Yamaha: ["YZF-R1", "MT-07", "FZ6R"],
+      Suzuki: ["GSX-R750", "V-Strom 650", "Boulevard M109R"],
+      Kawasaki: ["Ninja ZX-10R", "Versys 650", "Vulcan S"]
+  };
 
-// funcion para validar la respuesta del usuario 
-function validarRespuesta(pregunta, opciones, callback) {
-  let respuestaUsuario = prompt(pregunta).toLowerCase();
+  const cargarOpciones = (opciones, select) => {
+      select.innerHTML = '';
+      opciones.forEach(opcion => {
+          const nuevaOpcion = document.createElement('option');
+          nuevaOpcion.text = opcion;
+          nuevaOpcion.value = opcion;
+          select.appendChild(nuevaOpcion);
+      });
+  };
 
-  if (opciones.includes(respuestaUsuario)) {
-    callback(respuestaUsuario);
-  } else {
-    console.log("Respuesta no válida. Por favor, intenta de nuevo.");
-    validarRespuesta(pregunta, opciones, callback);
-  }
-}
+  const calcularCotizacion = () => {
+      // Lógica de cálculo de cotización aquí
+      // En este ejemplo, simplemente se genera un número aleatorio entre 500 y 1500
+      return Math.floor(Math.random() * 1000) + 500;
+  };
 
-// solicitamos el nombre del usuario 
-let nombreUsuario = prompt("Por favor, ingresa tu nombre:");
+  const obtenerCobertura = () => {
+      const tipoSeguro = seguroSelect.value;
+      if (tipoSeguro === 'basico') {
+          return 'Cobertura Básica';
+      } else if (tipoSeguro === 'completo') {
+          return 'Cobertura Completa';
+      }
+      return 'Cobertura Desconocida';
+  };
 
-// bucle principal para la cotizacion 
-while (seguirCotizando) {
-  // verificamos si el usuario es profesor o no 
-  validarRespuesta("Hola " + nombreUsuario + ", ¿eres profesor?", ["si", "no"], (respuesta) => {
-    let descuento = 0;
+  const guardarCotizacionLocalStorage = (cotizacion, cobertura) => {
+      localStorage.setItem('cotizacion', cotizacion);
+      localStorage.setItem('cobertura', cobertura);
+  };
 
-    if (respuesta === "si") {
-      console.log("¡Bienvenido, " + nombreUsuario + "! Como profesor, obtienes un 10% de descuento.");
-      descuento += seguros.descuentoProfesor;
-    } else {
-      console.log("Lo siento, " + nombreUsuario + ", no obtienes descuento como profesor.");
-    }
+  const cargarCotizacionDesdeLocalStorage = () => {
+      const cotizacionGuardada = localStorage.getItem('cotizacion');
+      const coberturaGuardada = localStorage.getItem('cobertura');
+      if (cotizacionGuardada && coberturaGuardada) {
+          cotizacionResultado.textContent = `La cotización para su seguro seleccionado es de $${cotizacionGuardada}`;
+          coberturaResultado.textContent = `La cobertura seleccionada es: ${coberturaGuardada}`;
+          resultadoDiv.style.display = 'block';
+      }
+  };
 
-    // solicitamos información del auto y tipo de seguro
-    let autoElegido = solicitarInformacionAuto();
-    let tipoSeguroElegido = solicitarTipoSeguro();
+  const cargarAniosDisponibles = () => {
+      const anioActual = new Date().getFullYear();
+      const aniosDisponibles = [];
+      for (let i = anioActual; i >= 2000; i--) {
+          aniosDisponibles.push(i);
+      }
+      cargarOpciones(aniosDisponibles, anioSelect);
+  };
 
-    // calculamos el precio del seguro y mostramos información al usuario
-    let precioSeguro = calcularPrecioSeguro(autoElegido.marca, autoElegido.modelo, autoElegido.año, tipoSeguroElegido, descuento);
+  const inicializarFormulario = () => {
+      cargarOpciones(marcasPorTipo['auto'], marcaSelect);
+      cargarAniosDisponibles();
+  };
 
-    if (precioSeguro !== null) {
-      mostrarInformacionSeguro(autoElegido, tipoSeguroElegido, precioSeguro);
+  inicializarFormulario();
 
-      // consulta al usuario si quiere cotizar otro seguro mas 
-      let deseaCotizar = confirm("¿Quieres cotizar otro seguro?");
-      seguirCotizando = deseaCotizar;
-    } else {
-      console.log("Lo sentimos, no tenemos información para la marca, modelo o año especificados.");
-    }
-  });
-}
-
-// mensaje para avisar de la finalizacion de la cotizacion 
-console.log("Fin del proceso de cotización de seguros");
-
-// calculamos el precio del seguro con una funcion 
-function calcularPrecioSeguro(marca, modelo, año, tipoSeguro, descuento) {
-  if (modelosPermitidos[marca] && modelosPermitidos[marca].includes(modelo) && seguros.opciones[tipoSeguro]) {
-    let antiguedad = new Date().getFullYear() - año;
-    let precioBase = seguros.opciones[tipoSeguro].precio;
-
-    // aplicamos descuento por la antiguedad del auto 
-    let descuentoAntiguedad = antiguedad * seguros.descuentoAnioAntiguedad;
-    let precioConDescuento = precioBase - (precioBase * descuentoAntiguedad);
-
-    // Aplicar descuento adicional 
-    let precioFinal = precioConDescuento - (precioConDescuento * descuento);
-
-
-    return precioFinal;
-  } else {
-    return null;
-  }
-}
-
-// Funcion para solicitar información sobre el auto al usuario
-function solicitarInformacionAuto() {
-  let marca = null;
-  let modelo = null;
-
-  // Validamos la marca del auto
-  validarRespuesta("Ingresa la marca del auto (toyota, honda, ford):", Object.keys(modelosPermitidos), (respuesta) => {
-    marca = respuesta;
-
-    // Validamos el modelo del auto
-    validarRespuesta("Ingresa el modelo del auto (" + modelosPermitidos[marca].join(", ") + "):", modelosPermitidos[marca], (respuestaModelo) => {
-      modelo = respuestaModelo;
-    });
+  tipoVehiculoSelect.addEventListener('change', function() {
+      const tipoSeleccionado = tipoVehiculoSelect.value;
+      cargarOpciones(marcasPorTipo[tipoSeleccionado], marcaSelect);
   });
 
-  // obtenemos el año del auto 
-  let año = parseInt(prompt("Ingresa el año del auto:"));
-  return { marca, modelo, año };
-}
-
-// funcion para que el usuario elija el tipo de seguro 
-function solicitarTipoSeguro() {
-  let opcionesSeguro = Object.keys(seguros.opciones);
-  let mensajeOpciones = opcionesSeguro.map(opcion => `${opcion} - ${seguros.opciones[opcion].nombre}`).join("\n");
-  let tipoSeguro = null;
-
-  // Validamos el tipo de seguro
-  validarRespuesta("Selecciona el tipo de seguro:\n" + mensajeOpciones, opcionesSeguro, (respuestaTipoSeguro) => {
-    tipoSeguro = respuestaTipoSeguro;
+  marcaSelect.addEventListener('change', function() {
+      const marcaSeleccionada = marcaSelect.value;
+      cargarOpciones(modelosPorMarca[marcaSeleccionada], modeloSelect);
   });
 
-  return tipoSeguro;
-}
+  formulario.addEventListener('submit', function(event) {
+      event.preventDefault(); // Evitar que el formulario se envíe
 
-// mostramos los datos del seguro al usuario 
-function mostrarInformacionSeguro(auto, tipoSeguro, precioSeguro) {
-  console.log("Información del seguro:");
-  console.log("Marca: " + auto.marca);
-  console.log("Modelo: " + auto.modelo);
-  console.log("Año: " + auto.año);
-  console.log("Tipo de seguro: " + seguros.opciones[tipoSeguro].nombre);
-  console.log("Cobertura: " + seguros.opciones[tipoSeguro].cobertura);
-  console.log("Precio del seguro: $" + precioSeguro.toFixed(2));
-}
+      const cotizacion = calcularCotizacion();
+      const cobertura = obtenerCobertura();
+
+      cotizacionResultado.textContent = `La cotización para su seguro seleccionado es de $${cotizacion}`;
+      coberturaResultado.textContent = `La cobertura seleccionada es: ${cobertura}`;
+      resultadoDiv.style.display = 'block';
+
+      guardarCotizacionLocalStorage(cotizacion, cobertura);
+  });
+
+  cargarCotizacionDesdeLocalStorage();
+});

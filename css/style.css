@@ -1,46 +1,129 @@
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-  }
-  
-  .container {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 400px;
-    text-align: center;
-  }
-  
-  h1 {
-    color: #333;
-  }
-  
-  button {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    margin-top: 10px;
-  }
-  
-  button:hover {
-    background-color: #45a049;
-  }
-  
-  input {
-    padding: 10px;
-    margin: 5px 0;
-    width: 100%;
-    box-sizing: border-box;
-  }
-  
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  width: 80%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.welcome-box {
+  text-align: center;
+  background-color: #007bff;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.welcome-box h1 {
+  color: white;
+}
+
+.ib-logo {
+  display: block;
+  margin: 0 auto;
+  width: 200px; /* Ajusta el tamaño de acuerdo a tus necesidades */
+  margin-bottom: 20px;
+}
+
+.button {
+  background-color: #00cc66; /* Cambio de color para el botón de cotizar */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  text-decoration: none;
+  display: block;
+  width: 200px; /* Ajusta el ancho del botón */
+  margin: 0 auto;
+  border-radius: 5px;
+}
+
+.button:hover {
+  background-color: #00994d; /* Cambio de color en hover */
+}
+
+.car-logos {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.car-logos img {
+  width: 100px; /* Ajusta el tamaño de acuerdo a tus necesidades */
+  margin: 0 10px; /* Espacio entre las imágenes de los autos */
+}
+
+footer {
+  background-color: #f0f0f0;
+  padding: 20px;
+  text-align: center;
+}
+
+.social-media {
+  margin-bottom: 10px;
+}
+
+.social-media a {
+  display: inline-block;
+  margin: 0 10px; /* Espacio entre las imágenes de redes sociales */
+}
+
+.social-media img {
+  width: 30px; /* Tamaño de las imágenes de redes sociales */
+  border-radius: 50%; /* Para que las imágenes sean redondas */
+}
+
+/* Estilos adicionales para el formulario de cotización */
+
+form {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+form label {
+  color: #333;
+  font-weight: bold;
+}
+
+form select {
+  color: #555;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 8px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+
+form button {
+  background-color: #007bff;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+form button:hover {
+  background-color: #0056b3;
+}
+
+#resultado {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 20px;
+}
+
+#resultado p {
+  color: #333;
+  font-weight: bold;
+}
+
+
